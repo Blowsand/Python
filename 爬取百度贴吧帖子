@@ -48,7 +48,7 @@ class BDTB:
         contents = []
         for item in items:
         content = "\n" + self.tool.rapalce(item) + "\n"
-     contents.append(content.enconde("utf-8"))
+        contents.append(content.enconde("utf-8"))
         return contents
          
     def setFileTitle(self, title):
@@ -62,7 +62,7 @@ class BDTB:
         for item in contents:
             if self.floorTag == "1":
                 floorLine = "\n" + str(self.floor) + u"-----------------"
-                 self.file.write(floorLine)
+                self.file.write(floorLine)
             self.file.write(item)
             self.floor += 1
              
@@ -80,7 +80,7 @@ class BDTB:
                 print ("正在写入第" + str(i) + "页数据")
                 page = self.getPage(i)
                 contents = self.getContent(page)
-                 self.writeData(contents)
+                self.writeData(contents)
         except IOError, e:
             print ("写入异常, 原因" + e.massage)
         finally:
