@@ -26,30 +26,30 @@ class BDTB:
                 print (u"连接贴吧失败，失败原因：", e.reason)
                 return None
                 
-     def getTitle(self, page):
-         pattern = re.compile('<h1 class="core_title_txt.*?>(.*?)</h1>', re.S)
-         result = re.search(pattern, page)
-         if result:
-             reutrn result.sroup(1).strip()
-         else:
-             return None
+    def getTitle(self, page):
+        pattern = re.compile('<h1 class="core_title_txt.*?>(.*?)</h1>', re.S)
+        result = re.search(pattern, page)
+        if result:
+            reutrn result.sroup(1).strip()
+        else:
+            return None
              
-     def getPageNum(self, page):
-         pattern = re.compile('<li class="l_reply_num.*?</span>.*?<span.*?>(.*?)</span>'.re.S)
-         result = re.search(pattern, page)
-         if result:
-             return result.group(1).strip()
-         else:
-             return None
+    def getPageNum(self, page):
+        pattern = re.compile('<li class="l_reply_num.*?</span>.*?<span.*?>(.*?)</span>'.re.S)
+        result = re.search(pattern, page)
+        if result:
+            return result.group(1).strip()
+        else:
+            return None
              
-     def getContent(self, page):
-         pattern = re.compile('<div id=post_content_.*?>(.*?)</div>', re.S)
-         items = re.findall(pattern, page)
-         contents = []
-         for item in items:
-         content = "\n" + self.tool.rapalce(item) + "\n"
+    def getContent(self, page):
+        pattern = re.compile('<div id=post_content_.*?>(.*?)</div>', re.S)
+        items = re.findall(pattern, page)
+        contents = []
+        for item in items:
+        content = "\n" + self.tool.rapalce(item) + "\n"
          contents.append(content.enconde("utf-8"))
-         return contents
+        return contents
          
      def setFileTitle(self, title):
          if title is not None:
