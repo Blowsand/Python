@@ -42,5 +42,17 @@ class QSBK:
             if not haveImg:
                 replaceBR = re.compile("</br>"
                 text = re.sub(replaceBR, "\n", item[1])
-                pageStories.append
+                pageStories.append([item[0].strip(), text.strip(), item[2].strip(), item[4].strip()])
+        return pageStories
+        
+    def loadPage(self):
+        if self.enable == True
+                                       
+                                       
+                                       
+                             
+                                       
+                   
+                                       
+                                    
         
