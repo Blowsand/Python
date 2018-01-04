@@ -1,58 +1,132 @@
 #!/usr//bin/env python
 #-*- coding:utf-8 -*-
-
+"""
+获取糗百段子
+"""
 import urllib
 import urllib2
 import re
 
+#定义糗百类
 class QSBK:
-
+    #初始化一些变量
     def __init__(self):
+        #初始页面设置为第一页
         self.pageIndex = 1
+        #设置headers代理
         self.user_agent = "Mozilla 4.0(compatible; MSIE 5.5; Windows NT)"
         self.headers = {"User-Agent": self.user_agent}
+        #存放段子的变量，每一个元素是每一页的段子
         self.stories = []
+        #是否继续运行存放程序
         self.enable = False
-        
+    
+    #传入页面索引（pageIndex）获取相应的页面代码
     def getPage(self, pageIndex):
+        #无错误时，执行
         try:
+            #设置url和转化为str类型的pageIndex
             url = "http://www.qiushibaike.com/hot/page/" + str(pageIndex)
+            #构建request页面请求
             request = urllib2.Request(url, headers = self.headers)
+            #利用urlopen获取页面代码
             response = urllib2.urlopen(request)
+            #将页面代码转化为‘UTF-8’格式
             pageCode = response.read().decode("utf-8")
+            #函数返回转化后的页面代码
             return pageCode
-            
+        
+        #出现异常时，输出异常原因   
         except urllib2.URLError, e:
             if hasattr(e, "reason"):
                 print (u"连接糗百失败，失败原因：", e.reason)
                 return None
-                
+            
+    #由页面索引（pageIndex），获取对应页面代码，返回本页不带图片段子            
     def getPageItems(self, pageIndex):
+        #由索引获取对应页面代码
         pageCode = self.getPage(pageIndex)
+        #获取页面代码失败
         if not pageCode:
             print ("页面加载失败.....")
             return None
-            
+        
+        #设置正则表达式格式，将获取内容分别处理，(.*?)做分割
+        #item[0]代表发布者，item[1]代表内容，item[2]代表发布日期，item[3]代表图片，item[4]代表点赞数
         pattern = re.compile('<div.*?author">.*?<a.*?<img.*?>(.*?)</a>.*?<div.*?'+
                          'content">(.*?)<!--(.*?)-->.*?</div>(.*?)<div class="stats.*?class="number">(.*?)</i>', re.S)
+        #使用re.findall做筛选，并依次存放在items内
         items = re.findall(pattern, pageCode)
+        #用来存储每页的段子
         pageStories = []
+        #for将筛选后的内容处理
         for item in items:
+            #在item[3]中查找是否含有图片
             haveImg = re.search("img", item[3])
+            #没有图片
             if not haveImg:
-                replaceBR = re.compile("</br>"
+                #定义正则表达式，换行符
+                replaceBR = re.compile("</br>"）
+                #将item[1]中换行符替换为"\n"
                 text = re.sub(replaceBR, "\n", item[1])
+                #strip（）去除两边多余空格后，存放在pageStories列表中，每页的段子作为一个整体存入
                 pageStories.append([item[0].strip(), text.strip(), item[2].strip(), item[4].strip()])
+        #返回存储段子后列表                               
         return pageStories
-        
+    
+    #提取页面内容，加入到列表中                                   
     def loadPage(self):
-        if self.enable == True
-                                       
-                                       
-                                       
-                             
-                                       
-                   
-                                       
-                                    
-        
+        #如果继续存储程序
+        if self.enable == True:
+           #如果存储的段子少于2页                            
+           if len(self.stories) < 2:
+              #获取新一页                         
+              pageStories = self.getPageItems(self.pageIndex)
+              #将获取到内容，保存在全局self.stories中                         
+              if pageStories:
+                 self.stories.append(pageStories)
+                 #获取完之后页码索引加一，表示下次读取下一页
+                 self.pageIndex += 1
+         
+    #每次敲回车打印输出一个段子                                   
+    def getOneStory(self, pageStories, page):
+        #遍历一页的所有段子                               
+        for story in pageStories:
+            #获取用户输入                           
+            input = input()
+            #提取页面内容                           
+            self.loadPage()
+            #如果输入的是"Q"，结束程序                           
+            if input == "Q":
+                #继续存储程序默认为False                       
+                self.enable = False           
+                return 
+            #输出页码，发布人，发布时间以及点赞数                           
+            print (u"第%d页\t发布人:%s\t发布时间：%s\t赞：%s\n%s" %(page, story[0], story[2), story[3], story[1])   
+   
+    #开始运行        
+    def start(self):      
+        print (u"正在读取糗事百科，按回车查看新的段子，Q退出")
+        #默认存储功能为True                                                                       
+        self.enable = True
+        #提取页码内容，并存储在pageStories中                                                                      
+        self.loadPage()          
+        #控制当前读到第几页                                                                      
+        nowpage = 0
+        while self.enable:
+            #如果获取到第一页的数据                                                                 
+            if len(self.stories) > 0:
+                #从全局list中获取第一部分内容                                                              
+                pageStories = self.stories[0] 
+                #当前读到的页数加一                                                               
+                nowpage += 1
+                #删除全局list中第一元素内容，因为已经取出在pageStories中                                                             
+                del self.stories[0]
+                #判断是否继续读取，如果输入的不是Q，则打印一个段子                                                          
+                self.getOneStory(pageStories, nowPage)   
+                                                                              
+spider = QSBK()
+spide.start()                                                                            
+                                                                              
+                                                                              
+                                                                              
