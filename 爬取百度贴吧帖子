@@ -3,13 +3,21 @@
 
 import urllib2
 import re
+
+#调用网页标签处理类
 import Tool
 
+#定义百度贴吧类
 class BDTB:
+    #初始化，传入基本的URL，是否只看楼主参数
     def __init(self, baseURL, seeLZ, floorTag):
+        #获取初始网址
         self.baseURL = baseURL
+        #获取是否只看楼主
         self.seeLZ = "?see_lz=" + str(seeLZ)
+        #获取HTML标签剔除根据类对象
         self.tool = Tool()
+        #
         self.file = None
         self.floor = 1
         self.defaultTitle = u"百度贴吧"
