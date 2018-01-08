@@ -93,4 +93,45 @@ class Login:
             return str(local_ip)
         ip_lists = socket.gethostbyname_ex(socket.gethostname())
         
+        for ip_list in ip_lists:
+            if isinstance(ip_list, list):
+                for i in ip_list:
+                    if self.ip_pre in str(i):
+                        return str(i)
+            elif type(ip_list) is types.StringType:
+                if self.ip_pre in ip_list:
+                    return ip_list
+                
+                
+        def canConnect(self):
+            fnull = open(os.devnull, 'w')
+            result = subprocess.call('ping www.baidu.com', shell = True, stdout = fnull, stderr = fnull)
+            fnull.close()
+            if result:
+                return False
+            else:
+                return True
+            
+            
+        def getCurrentTime(self):
+            return time.strftime('[%Y-%m-%d %H-%M-%S]', time.localtime(time.time()))
+        
+        
+        def main(self):
+            print (self.getCurrentTime(), u"您好，欢迎使用模拟登陆系统"
+            while True:
+                nowIP = self.getIP()
+                if not nowIP:
+                    print (self.getCurrentTime(), u"请检查是否连接QLSC_STC无线网络")
+                else:
+                    print (self.getCurrentTime(), u"成功连接了QLSC_STC网络， 本机IP为"， nowIP)
+                    self.login()
+                    while True:
+                        can_connect = self.canConnect()
+                        if not can_connect:
+                            nowIP = self.getIP()
+                            if not nowIP:
+                                print (self.getCurrentTime(), u"当前已掉线，请确保连接上了QLSC_STC网络")
+                   
+        
         
