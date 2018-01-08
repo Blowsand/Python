@@ -79,7 +79,7 @@ class Spider:
         return response.read().decode('gbk')
     
     #获取索引界面所有MM的信心，list格式
-    def getContent(self, pageIndex):
+    def getContents(self, pageIndex):
         #获取页码对应的页面代码
         page = self.getPage(pageIndex)
         #定义筛选条件
