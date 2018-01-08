@@ -199,14 +199,14 @@ class Spider:
             self.saveImgs(images, item[2])
                                
     #传入起止页码， 获取图片
-    def savePageInfo(self, start, end):
+    def savePagesInfo(self, start, end):
         for i in range(start, end+1):                      
             print (u"正在寻找第", i, u"个地方，看看MM在不在")
             self.savePageInfo(i)
                                
 #传入起止页码即可，在此传入2，10， 表示抓取第2到10页MM
 spider = Spider()
-spider.savePageInfo(2, 10)
+spider.savePagesInfo(2, 10)
                                
                                
                                
