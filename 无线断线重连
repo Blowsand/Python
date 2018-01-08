@@ -1,1 +1,96 @@
+#!/usr/bin/python 
+#-*- coding:utf-8 -*-
 
+import subprocess
+import urllib2
+import urllib
+import socket
+import types
+import time
+import os
+import re
+
+class Login:
+    def __init__(self):
+        self.username = "xxxx"
+        self.password = "xxxx"
+        self.ip_pre = '211.87'
+        self.overtime = 720
+        self.every = 10
+        
+    def login(self):
+        print (self.getCurrenttime(), u"正在尝试认证QLSC_SLC无线网络")
+        ip = self.getIP()
+        data = {
+            "username": self.username,
+            "password": self.password,
+            "serverType": "",
+            "isSavePass": "on",
+            "Submit1": "",
+            "Language": "Chinese",
+            "ClientIP": self.getIP(),
+            "timeoutvalue": 45,
+            "heartbeat": 240,
+            "fastwebornot": False,
+            "StartTime": self.getNowTime()
+            "shkOvertime": self.overtime,
+            "strOSName": "",
+            "iAdptIndex": "",
+            "strAdptName": "",
+            "strAdptStdName": "",
+            "strFileEncoding": "",
+            "PhyAddr": "",
+            "bDHCPEnable": "",
+            "strIPAddrArray": ""
+            "strMaskArray": "",
+            "strMask": "",
+            "iDHCPDelayTIme": "",
+            "iDHCPTryTimes": "",
+            "strOldPrivateIP": self.getIP(),
+            "strOldPublicIP": self.getIP(),
+            "strPrivateIP": self.getIP(),
+            "PublicIP": self.getIP(),
+            "iIPCONFIG": 0,
+            "sHttpPrefix": "http://192.168.10",
+            "title": "CAMS Portal" 
+        }
+        heasers = {
+            'User-Aget': 'Mozilla/5.0 (Windows NT 6.6; WOW64) AppleWebKit/5678.30',
+            'Host': '192.168.8.10',
+            'Origin': 'http://192.168.8.10'
+            'Referer': 'http://192.168.8.10/portal/index_default.jsp?Language=Chinese'
+        }
+        
+        post_data = urllib.urlencode(data)
+        login_url = 'http://192.168.8.10/portal/ligon.jsp?Flag=0'
+        request = urllib2.Request(login_url, post_data, headers)
+        response = urllib2.urlopen(requset)
+        result = response.read().decode('gbk')
+        self.getLoginResult(result)
+        
+    def getLoginResult(self, result):
+        if u"用户上线成功" in result:
+            print (self.getCurrentTime(), u"用户在线成功，在线时长为", self.overtime/60, "分钟")
+        elif u"您已建立连接" in result:
+            print (self.getCurrentTime(), u"您已建立连接，无需重复登陆")
+        elif u"用户不存在" in result:
+            print (self.getCurrentTime(), u"用户不存在，请检查账号是否正确")
+        elif u"用户密码错误" in result:
+            pattern = re.compile('<td class="tWhite".*?2553:(.*?)</b>.*?</td>', re.S)
+            res = re.search(pattern, result)
+            if res:
+                print (self.getCurrentTime(), res.group(1), u"请重新修改密码")
+        else:
+            print (self.getCurrentTime(), u"未知错误，请检查学号密码是否正确")
+
+    def getNowTime(self):
+        return str(int(time.time())) + '000'
+        
+        
+    def getIP(self):
+        local_ip = socket.gethostbyname(socket.gethostname())
+        if self.ip_pre in str(local_ip):
+            return str(local_ip)
+        ip_lists = socket.gethostbyname_ex(socket.gethostname())
+        
+        
