@@ -1,25 +1,37 @@
 #!/usr/bin/python 
 #-*- coding:utf-8 -*-
 
+#导入所需模块
+#导入进程模块
 import subprocess
 import urllib2
 import urllib
+#socket针对进程见通信
 import socket
 import types
 import time
 import os
 import re
 
+#定义模拟登陆
 class Login:
+    #初始化变量
     def __init__(self):
+        #定义用户名
         self.username = "xxxx"
+        #密码
         self.password = "xxxx"
+        #无线网络IP网段
         self.ip_pre = '211.87'
+        #登陆时长
         self.overtime = 720
+        #检测间隔时间，单位s
         self.every = 10
-        
+    
+    #模拟登陆
     def login(self):
         print (self.getCurrenttime(), u"正在尝试认证QLSC_SLC无线网络")
+        #获取包含无线IP地址
         ip = self.getIP()
         data = {
             "username": self.username,
@@ -88,16 +100,25 @@ class Login:
         
         
     def getIP(self):
+        #gethostbyname用域名或主机名获取IP地址，gethostname本地主机的标准主机名
+        #获取本地IP
         local_ip = socket.gethostbyname(socket.gethostname())
+        #如果获取网段包含无线网络IP
         if self.ip_pre in str(local_ip):
+            #返回包含无线网络IP
             return str(local_ip)
+        #gethostbyname_ex 能得到原先的域名，和域名列表，以及地址列表
         ip_lists = socket.gethostbyname_ex(socket.gethostname())
         
+        #
         for ip_list in ip_lists:
+            #判断ip_list是否是列表类型
             if isinstance(ip_list, list):
+                #返回包含无线网络ip的列表
                 for i in ip_list:
                     if self.ip_pre in str(i):
                         return str(i)
+            #将包含无线网络ip的地址强制以列表返回
             elif type(ip_list) is types.StringType:
                 if self.ip_pre in ip_list:
                     return ip_list
@@ -132,6 +153,11 @@ class Login:
                             nowIP = self.getIP()
                             if not nowIP:
                                 print (self.getCurrentTime(), u"当前已掉线，请确保连接上了QLSC_STC网络")
+                            else:
+                                print (self.getCurrentTime(), u"当前已经掉线，正在尝试重新连接")
+                                self.login()
+                            time.sleep(self.every)
                    
-        
+ login = login()
+ login.main()
         
