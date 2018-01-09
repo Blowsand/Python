@@ -33,6 +33,7 @@ class Login:
         print (self.getCurrenttime(), u"正在尝试认证QLSC_SLC无线网络")
         #获取包含无线IP地址
         ip = self.getIP()
+        #设置网页表单数据
         data = {
             "username": self.username,
             "password": self.password,
@@ -66,20 +67,27 @@ class Login:
             "sHttpPrefix": "http://192.168.10",
             "title": "CAMS Portal" 
         }
+        #设置headers
         heasers = {
             'User-Aget': 'Mozilla/5.0 (Windows NT 6.6; WOW64) AppleWebKit/5678.30',
             'Host': '192.168.8.10',
             'Origin': 'http://192.168.8.10'
             'Referer': 'http://192.168.8.10/portal/index_default.jsp?Language=Chinese'
         }
-        
+        #对设置的表单数据做编码处理
         post_data = urllib.urlencode(data)
+        #设置基本网址
         login_url = 'http://192.168.8.10/portal/ligon.jsp?Flag=0'
+        #将表单数据，headers向URL发送请求
         request = urllib2.Request(login_url, post_data, headers)
+        #获取目标URL内容
         response = urllib2.urlopen(requset)
+        #对目标网页内容做编码处理
         result = response.read().decode('gbk')
+        #通过对网页内容处理，获取登陆结果
         self.getLoginResult(result)
-        
+    
+    #打印登陆结果
     def getLoginResult(self, result):
         if u"用户上线成功" in result:
             print (self.getCurrentTime(), u"用户在线成功，在线时长为", self.overtime/60, "分钟")
@@ -94,11 +102,12 @@ class Login:
                 print (self.getCurrentTime(), res.group(1), u"请重新修改密码")
         else:
             print (self.getCurrentTime(), u"未知错误，请检查学号密码是否正确")
-
+    
+    #获取当前时间
     def getNowTime(self):
         return str(int(time.time())) + '000'
         
-        
+    #获取本机无线IP    
     def getIP(self):
         #gethostbyname用域名或主机名获取IP地址，gethostname本地主机的标准主机名
         #获取本地IP
@@ -109,8 +118,7 @@ class Login:
             return str(local_ip)
         #gethostbyname_ex 能得到原先的域名，和域名列表，以及地址列表
         ip_lists = socket.gethostbyname_ex(socket.gethostname())
-        
-        #
+
         for ip_list in ip_lists:
             #判断ip_list是否是列表类型
             if isinstance(ip_list, list):
@@ -123,7 +131,7 @@ class Login:
                 if self.ip_pre in ip_list:
                     return ip_list
                 
-                
+        #判断当前是否可以联网        
         def canConnect(self):
             fnull = open(os.devnull, 'w')
             result = subprocess.call('ping www.baidu.com', shell = True, stdout = fnull, stderr = fnull)
@@ -133,29 +141,35 @@ class Login:
             else:
                 return True
             
-            
+        #获取当前时间    
         def getCurrentTime(self):
             return time.strftime('[%Y-%m-%d %H-%M-%S]', time.localtime(time.time()))
         
-        
+        #主函数
         def main(self):
-            print (self.getCurrentTime(), u"您好，欢迎使用模拟登陆系统"
+            print (self.getCurrentTime(), u"您好，欢迎使用模拟登陆系统")
             while True:
+                #获取本机无线IP
                 nowIP = self.getIP()
                 if not nowIP:
                     print (self.getCurrentTime(), u"请检查是否连接QLSC_STC无线网络")
                 else:
                     print (self.getCurrentTime(), u"成功连接了QLSC_STC网络， 本机IP为"， nowIP)
+                    #模拟登陆，输出登陆结果
                     self.login()
                     while True:
+                        #判断当前是否可以联网
                         can_connect = self.canConnect()
                         if not can_connect:
+                            #如果不能联网，获取本机无线IP
                             nowIP = self.getIP()
                             if not nowIP:
                                 print (self.getCurrentTime(), u"当前已掉线，请确保连接上了QLSC_STC网络")
                             else:
                                 print (self.getCurrentTime(), u"当前已经掉线，正在尝试重新连接")
+                                 #模拟登陆，输出登陆结果
                                 self.login()
+                            #检测间隔时间    
                             time.sleep(self.every)
                    
  login = login()
