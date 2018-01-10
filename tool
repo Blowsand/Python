@@ -22,4 +22,8 @@ class Tool:
             
     def getGoodsInfo(self, page):
         #u'\u8ba2\u5355\u53f7'是订单号的编号
-        pattern = re.compile(u'dealtime.*?>(.*?)</span>')
+        pattern = re.compile(u'dealtime.*?>(.*?)</span>',re.S)
+        result = re.findall(pattern, page)
+        for item in result:
+            print ('----------------------')
+            print ('购买日期：'，)
