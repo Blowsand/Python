@@ -15,3 +15,54 @@ def getHTMLText(url):
 if __name__ == "__main__":
     url = "http://www.baidu.com"
     print (getHTMLText(url))
+
+
+#京东商品页面的爬取
+import requests
+url = "http://www.item.jd.com/78342723.html"
+try:
+    r = requests.get(url)
+    r.raise_for_status()
+    r.encoding = r.apparent_encoding
+    print (r.text[:1000])
+except:
+    return "连接错误"
+    
+#亚马逊商品页面的爬取
+#设置headers
+import requests
+url = "http://www.amazon.cn/gp/product/BD1M8L5Z3Y"
+try:
+    kv = {'user-agent': 'Mozilla/5.0'}
+    r = reuqests.get(url, headers=kv)
+    r.raise_for_status()
+    r.encoding = r.apparent_encoding
+    return r.text[:1000]
+except:
+    return "爬取失败"
+    
+#百度/360搜索关键词提交
+#百度关键词接口：http://www.baidu.com/s?wd=keyword
+#360关键词接口: http://www.so.com/s?q=keyword
+#百度
+import requests
+keyword = {"wd": 'keyword'}
+url = 'http://www.baidu.com/s'
+try:
+    r = requests.get(url, params= keyword)
+    r.raise_for_status()
+    return r.text[:1000]
+except:
+    return "爬取失败"   
+#360
+import requests
+keyword = {"q":"keyword"}
+url = "http://www.so.com/s"
+try:
+    r = requests.get(url, params=keyworl)
+    r.raise_for_status()
+    return r.text[:1000]
+except:
+    return "爬取失败"
+    
+#网络图片的爬取和存储
