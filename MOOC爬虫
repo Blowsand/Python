@@ -18,6 +18,7 @@ if __name__ == "__main__":
 
 
 #京东商品页面的爬取
+
 import requests
 url = "http://www.item.jd.com/78342723.html"
 try:
@@ -84,4 +85,17 @@ try:
     else:
         print ("文件已存在")
 except:
+    print ("爬取失败")
+
+#IP地址归属地的自动查询
+#url="http://m.ip138.com/ip.asp?ip=ipaddress"
+import requests
+url = "http://www.m.ip138.com/ip.asp?ip="
+address = "202.204.80.80"
+try:
+    r = requests.get(url + str(address))
+    r.raise_for_status()
+    r.encoding = r.apparent_encoding
+    return r.text[-500:]
+excep:
     print ("爬取失败")
