@@ -1,0 +1,41 @@
+
+#基于python 3.6
+
+#!/usr/bin/python
+#-*- coding:utf-8 -*-
+
+import http.cookiejar
+import urllib.request
+import urllib.parse
+import re
+
+def getHtml(url):
+    #初始化一个cookie来处理cookie
+    cookie = http.cookiejar.CookieJar()
+    #实例化一个全局opener
+    handler = urllib.request.HTTPCookieProcess(cookie)
+    opener = urllib.request.build_opener(handler)
+    #创建header
+    opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) 
+            AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'),
+            ('Cookie','4564564564564564565646540')])]
+            
+    urllib.request.install_opener(opener)
+    #获取网页信息
+    html_bytes = urllib.request.urlopen(url).read()
+    #对网页信息解码，并返回
+    html_string = html_bytes.decode('utf-8')
+    return html_string
+    
+#获取解码后的网页信息
+html = getHtml("http://www.zst.aicai.com/")
+#对获取到的信息做删选
+table = html[html.find('table class="fzTab nbt">') : html.find('</table>')]
+
+tmp = table.split('<tr \r\n\t\t        onmouseout=', 1)
+trs = tmp[1]
+tr = trs[: trs.find('</tr>')]
+number = tr.split('<td   >')[1].split('</td>')[0]
+print (number + '期开奖号码：', end = '')
+redtmp = tr.split('<td class="redcolor sz12>')
+reds = redtmp[1:len(redtmp)-1]
